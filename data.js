@@ -1,13 +1,11 @@
-const users = {
-  "amanda@ciobanu.org" : {
-    firstName: "Amanda",
-    lastName: "Ciobanu",
-    password: "123"
+const users = {};
+
+const addUser = (firstName, lastName, email, password) => {
+  users[email.trim().toLowerCase()] = {
+    firstName,
+    lastName,
+    password
   }
-};
-
-const addUser = () => {
-
 }
 
 const getUser = (email) => {

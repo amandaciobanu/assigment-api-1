@@ -32,7 +32,27 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  return res.send('Received a GET HTTP method');
+  // validate parameters.
+  const { firstName, lastName, email, password } = req.body;
+  if (!email || !password || !firstName || !lastName) {
+    res.status(400);
+    return res.send('Invalid request.');
+  }
+
+  // check if user exists and if not, register
+  const existing = getUser(email);
+  if (existing) {
+    res.status(400);
+    return res.send('User already registered.');
+  }
+  addUser(firstName, lastName, email, password);
+
+  // send back details ... like login
+  return res.send({
+    firstName,
+    lastName,
+    email
+  });
 });
 
 app.post('/reset', (req, res) => {
