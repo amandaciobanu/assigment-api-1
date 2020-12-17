@@ -58,7 +58,14 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/reset', (req, res) => {
-  return res.send('Received a GET HTTP method');
+  // this method does nothing
+  const { email } = req.body;
+  if (!email) {
+    res.status(400);
+    return res.send('Invalid request.');
+  }
+
+  return res.send({ sent: true });
 });
 
 app.listen(process.env.PORT, () =>
