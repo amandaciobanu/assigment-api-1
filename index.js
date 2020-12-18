@@ -2,6 +2,7 @@ const { config } = require("dotenv");
 const express = require("express");
 const cors = require("cors");
 const { getUser, addUser } = require("./data.js");
+const hash = require('object-hash');
 
 config();
 
@@ -20,7 +21,7 @@ app.post('/login', async (req, res) => {
 
   // validate user.
   const user = await getUser(email);
-  if (user && user.password === password) {
+  if (user && user.password === hash(password)) {
     return res.send({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -47,7 +48,7 @@ app.post('/register', async (req, res) => {
     res.status(400);
     return res.send('User already registered.');
   }
-  const user = await addUser(firstName, lastName, email, password);
+  const user = await addUser(firstName, lastName, email, hash(password));
 
   // send back details ... like login
   return res.send({

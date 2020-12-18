@@ -1,10 +1,10 @@
 const MongoClient = require('mongodb').MongoClient;
 
-const users = {};
+require("dotenv").config();
 
-const dbName = 'p0';
-const collectionName = 'users';
-const url = "";
+const dbName = process.env.MONGO_DB;
+const collectionName = process.env.MONGO_COLLECTION;
+const url = process.env.MONGO_URL;
 
 const addUser = async (firstName, lastName, email, password) => {
   const client = await MongoClient.connect(url,  { useUnifiedTopology: true });
