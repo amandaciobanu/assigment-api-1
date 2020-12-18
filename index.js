@@ -1,7 +1,7 @@
-import { config } from "dotenv";
-import express from 'express';
-import cors from 'cors';
-import { getUser, addUser } from './data.js'
+const { config } = require("dotenv");
+const express = require("express");
+const cors = require("cors");
+const { getUser, addUser } = require("./data.js");
 
 config();
 
@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   // validate input.
   const { email, password } = req.body;
   if (!email || !password) {
@@ -19,7 +19,7 @@ app.post('/login', (req, res) => {
   }
 
   // validate user.
-  const user = getUser(email);
+  const user = await getUser(email);
   if (user && user.password === password) {
     return res.send({
       firstName: user.firstName,
@@ -33,7 +33,7 @@ app.post('/login', (req, res) => {
   return res.send('Invalid credentials.');
 });
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   // validate parameters.
   const { firstName, lastName, email, password } = req.body;
   if (!email || !password || !firstName || !lastName) {
@@ -42,18 +42,18 @@ app.post('/register', (req, res) => {
   }
 
   // check if user exists and if not, register
-  const existing = getUser(email);
+  const existing = await getUser(email);
   if (existing) {
     res.status(400);
     return res.send('User already registered.');
   }
-  addUser(firstName, lastName, email, password);
+  const user = await addUser(firstName, lastName, email, password);
 
   // send back details ... like login
   return res.send({
-    firstName,
-    lastName,
-    email
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email
   });
 });
 
